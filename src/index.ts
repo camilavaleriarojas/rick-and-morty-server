@@ -1,24 +1,22 @@
-import express from 'express';
-import cors from 'cors';
-import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import mongoose from 'mongoose';
+import app from './app';
+import firebaseApp from './helpers/firebase';
 
 dotenv.config();
 
-const app = express();
-const PORT = process.env.PORT || 3001;
+const port = process.env.PORT;
+const MONGO_URI = process.env.MONGO_URI || '';
 
-app.use(cors());
-app.use(express.json());
-
-mongoose
-  .connect(process.env.MONGO_URI!)
-  .then(() => {
-    console.log('Connected to MongoDB');
-    app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
+const mongooseConnect = async () => {
+  try {
+    await mongoose.connect(MONGO_URI);
+    firebaseApp.appCheck();
+    app.listen(port, () => {
+      console.log(`Listening at http://localhost:${port}`);
     });
-  })
-  .catch((error) => {
-    console.error('Error connecting to MongoDB:', error);
-  });
+  } catch (error) {
+    console.error(error);
+  }
+};
+mongooseConnect();

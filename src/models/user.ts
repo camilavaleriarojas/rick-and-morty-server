@@ -19,6 +19,12 @@ export const userSchema = new Schema({
     type: String,
     required: true,
   },
+  favoriteCharacters: [
+    {
+      type: String,
+      required: false,
+    },
+  ],
 });
 
 export type User = InferSchemaType<typeof userSchema>;
